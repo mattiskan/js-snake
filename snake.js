@@ -1,7 +1,5 @@
-
-
 const GRID_SIZE = 10;
-
+const ACCELERATION = 1.05;
 const DIRECTIONS = {
     L: [-1, 0],
     R: [1, 0],
@@ -10,17 +8,21 @@ const DIRECTIONS = {
 };
 
 
-var speed = 300;
-const ACCELERATION = 1.05;
-
-var grid = [];
-var food = [1, 1];
-var snake = [[4, 4], [5, 4]]
-
-var snakeDir = DIRECTIONS.U;
+var grid;
+var food;
+var speed;
+var snake;
+var snakeDir;
 
 
 var init = () => {
+    grid = [];
+    food = [1, 1];
+    speed = 300;
+    snake = [[4, 4], [5, 4]]
+    snakeDir = DIRECTIONS.U;
+
+    
     for (let i = 0; i < GRID_SIZE; i++) {
 	var row = [];
 	
@@ -70,7 +72,6 @@ var onKeypress = (e) => {
 
 
 var update = () => {
-
     snake.unshift([
 	snake[0][0] + snakeDir[0], 
 	snake[0][1] + snakeDir[1],
@@ -159,20 +160,32 @@ var fillCircle = (x, y, filled) => {
     ctx.stroke();
 };
 
+const GAME_OVER = new Error('game over');
+
 var endGame = () => {
-    alert('game over: ' + snake.length);
-    throw new Error('game over')
+    alert('Game over. You got to size ' + snake.length + '. Press OK to play again.');
+    throw GAME_OVER;
 };
 
 
-init();
-render();
-
-
 var gameLoop = () => {
-    update();
+    try {
+	update();
+    } catch(GAME_OVER) {
+	init();
+    }
     render();
     setTimeout(gameLoop, speed);
 }
 
+
+
+
+init();
+render();
+alert('Welcome to snake! Use the WASD kys to steer and press OK to start');
 gameLoop();
+
+
+
+
